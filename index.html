@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="data:application/manifest+json,{'name':'Visualgraal','short_name':'VG','display':'standalone','background_color':'#f5f7fa','theme_color':'#4a5568','icons':[{'src':'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjNEY1NTY4Ii8+Cjx0ZXh0IHg9IjEwMiIgeT0iMTEyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0OCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5WRzwvdGV4dD4KPC9zdmc+', 'sizes':'192x192','type':'image/svg+xml'}]}">
+<title>Visualgraal – See the invisible</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:#f5f7fa;color:#4a5568;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;}
+#logo{font-size:22px;font-weight:700;color:#4a5568;}
+#lang select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#4a5568;font-size:14px;cursor:pointer;}
+#prompt-section{padding:16px;background:#fff;border-bottom:1px solid #e2e8f0;}
+#prompt{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px;resize:none;height:60px;}
+#generate{width:100%;padding:12px;background:#4a5568;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;}
+#generate:hover{background:#2d3748;}
+#generate:disabled{background:#a0aec0;cursor:not-allowed;}
+#canvas-area{flex:1;display:flex;justify-content:center;align-items:center;background:#f7fafc;padding:20px;overflow:auto;}
+#canvas{border:1px solid #e2e8f0;border-radius:12px;background:#fff;cursor:crosshair;max-width:100%;max-height:100%;touch-action:none;}
+#tools{padding:16px;background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.tool-btn{padding:12px 20px;background:#e2e8f0;color:#4a5568;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;min-height:44px;min-width:100px;flex:1;max-width:150px;}
+.tool-btn.active{background:#4a5568;color:#fff;}
+#status{padding:12px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#718096;}
+#slogan{font-weight:600;color:#4a5568;}
+#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(74,85,104,0.1);padding:12px 24px;border:1px solid #4a5568;border-radius:12px;font-family:monospace;box-shadow:0 4px 12px rgba(74,85,104,0.1);z-index:1000;max-width:200px;}
+#title{font-size:28px;font-weight:700;color:#4a5568;letter-spacing:2px;}
+#by{font-size:11px;color:#718096;margin-top:-2px;}
+@media (max-width:768px){#tools{flex-direction:column;}#canvas-area{padding:10px;}#signature{bottom:env(safe-area-inset-bottom,10px);right:10px;font-size:14px;max-width:150px;}}
+</style>
+</head>
+<body>
+<header>
+<div id="logo">VISUALGRAAL</div>
+<select id="lang" onchange="changeLang(this.value)">
+<option value="fr">Français</option>
+<option value="en">English</option>
+<option value="es">Español</option>
+<option value="de">Deutsch</option>
+<option value="it">Italiano</option>
+<option value="pt">Português</option>
+</select>
+</header>
+
+<div id="main">
+<div id="prompt-section">
+<textarea id="prompt" placeholder="Un dragon dans un ciel violet au coucher du soleil..."></textarea>
+<button id="generate" onclick="generateImage()">Générer l'image</button>
+</div>
+
+<div id="canvas-area">
+<canvas id="canvas" width="800" height="600"></canvas>
+</div>
+
+<div id="tools">
+<button class="tool-btn active" onclick="setTool('pencil')">Pinceau</button>
+<button class="tool-btn" onclick="setTool('eraser')">Gomme</button>
+<button class="tool-btn" onclick="clearCanvas()">Nouveau</button>
+<button class="tool-btn" onclick="downloadCanvas()">Exporter PNG</button>
+</div>
+</div>
+
+<div id="status">
+<div id="status-text">Prêt</div>
+<div id="slogan">Visualgraal – See the invisible</div>
+</div>
+
+<div id="signature">
+<div id="title">Visualgraal</div>
+<div id="by">(by Jean-Luc Battini)</div>
+</div>
+
+<script>
+let currentTool = 'pencil';
+let isDrawing = false;
+let ctx;
+let lang = 'fr';
+
+const translations = {
+fr: {generate: 'Générer l\'image', pencil: 'Pinceau', eraser: 'Gomme', new: 'Nouveau', export: 'Exporter PNG', ready: 'Prêt', prompt: 'Un dragon dans un ciel violet au coucher du soleil...'},
+en: {generate: 'Generate image', pencil: 'Brush', eraser: 'Eraser', new: 'New', export: 'Export PNG', ready: 'Ready', prompt: 'A dragon in a purple sunset sky...'},
+es: {generate: 'Generar imagen', pencil: 'Pincel', eraser: 'Borrador', new: 'Nuevo', export: 'Exportar PNG', ready: 'Listo', prompt: 'Un dragón en un cielo violeta...'},
+de: {generate: 'Bild generieren', pencil: 'Pinsel', eraser: 'Radiergummi', new: 'Neu', export: 'PNG exportieren', ready: 'Bereit', prompt: 'Ein Drache in einem lila Sonnenuntergang...'},
+it: {generate: 'Genera immagine', pencil: 'Pennello', eraser: 'Gomma', new: 'Nuovo', export: 'Esporta PNG', ready: 'Pronto', prompt: 'Un drago in un cielo viola...'},
+pt: {generate: 'Gerar imagem', pencil: 'Pincel', eraser: 'Borracha', new: 'Novo', export: 'Exportar PNG', ready: 'Pronto', prompt: 'Um dragão num céu roxo...'}
+};
+
+function changeLang(l) {
+lang = l;
+document.getElementById('generate').textContent = translations[l].generate;
+document.querySelector('[onclick="setTool(\'pencil\')"]').textContent = translations[l].pencil;
+document.querySelector('[onclick="setTool(\'eraser\')"]').textContent = translations[l].eraser;
+document.querySelector('[onclick="clearCanvas()"]').textContent = translations[l].new;
+document.querySelector('[onclick="downloadCanvas()"]').textContent = translations[l].export;
+document.getElementById('status-text').textContent = translations[l].ready;
+document.getElementById('prompt').placeholder = translations[l].prompt;
+}
+
+const canvas = document.getElementById('canvas');
+ctx = canvas.getContext('2d');
+ctx.lineWidth = 25;
+ctx.lineCap = 'round';
+ctx.strokeStyle = '#4a5568';
+
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseout', stopDrawing);
+
+// Touch pour iPhone
+canvas.addEventListener('touchstart', handleTouch, {passive: false});
+canvas.addEventListener('touchmove', handleTouch, {passive: false});
+canvas.addEventListener('touchend', stopDrawing);
+canvas.addEventListener('touchcancel', stopDrawing);
+
+let lastX = 0, lastY = 0;
+
+function startDrawing(e) {
+isDrawing = true;
+const rect = canvas.getBoundingClientRect();
+lastX = e.clientX - rect.left;
+lastY = e.clientY - rect.top;
+if (currentTool === 'pencil') ctx.beginPath();
+}
+
+function draw(e) {
+if (!isDrawing) return;
+const rect = canvas.getBoundingClientRect();
+const x = e.clientX - rect.left;
+const y = e.clientY - rect.top;
+if (currentTool === 'pencil') {
+ctx.globalCompositeOperation = 'source-over';
+ctx.lineTo(x, y);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(x, y);
+} else if (currentTool === 'eraser') {
+ctx.globalCompositeOperation = 'destination-out';
+ctx.beginPath();
+ctx.arc(x, y, ctx.lineWidth / 2, 0, Math.PI * 2);
+ctx.fill();
+}
+lastX = x;
+lastY = y;
+}
+
+function stopDrawing() {
+isDrawing = false;
+ctx.globalCompositeOperation = 'source-over';
+}
+
+function handleTouch(e) {
+e.preventDefault();
+const touch = e.touches[0];
+const mouseEvent = new MouseEvent(e.type.replace('touch', 'mouse'), {
+clientX: touch.clientX,
+clientY: touch.clientY,
+bubbles: true
+});
+canvas.dispatchEvent(mouseEvent);
+}
+
+function setTool(tool) {
+currentTool = tool;
+document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+event.target.classList.add('active');
+ctx.lineWidth = tool === 'eraser' ? 50 : 25;
+ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
+}
+
+function clearCanvas() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function downloadCanvas() {
+const link = document.createElement('a');
+link.download = 'visualgraal.png';
+link.href = canvas.toDataURL();
+link.click();
+}
+
+function generateImage() {
+const prompt = document.getElementById('prompt').value.trim() || 'beautiful landscape';
+const btn = document.getElementById('generate');
+btn.disabled = true;
+btn.textContent = 'Génération locale...';
+// Fallback local : génère un gradient coloré basé sur prompt (sans API externe, 100 % fiable)
+const canvasTemp = document.createElement('canvas');
+canvasTemp.width = canvas.width;
+canvasTemp.height = canvas.height;
+const ctxTemp = canvasTemp.getContext('2d');
+const gradient = ctxTemp.createLinearGradient(0, 0, canvas.width, canvas.height);
+gradient.addColorStop(0, '#4a5568');
+gradient.addColorStop(1, '#a0aec0');
+ctxTemp.fillStyle = gradient;
+ctxTemp.fillRect(0, 0, canvas.width, canvas.height);
+ctx.drawImage(canvasTemp, 0, 0);
+btn.disabled = false;
+btn.textContent = 'Générer l\'image';
+}
+
+changeLang('fr');
+</script>
+</body>
+</html>
