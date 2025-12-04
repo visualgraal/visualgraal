@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="manifest" href="data:application/manifest+json,{'name':'Visualgraal','short_name':'VG','display':'standalone','background_color':'#f5f7fa','theme_color':'#4a5568','icons':[{'src':'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjNEY1NTY4Ii8+Cjx0ZXh0IHg9IjEwMiIgeT0iMTEyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0OCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5WRzwvdGV4dD4KPC9zdmc+', 'sizes':'192x192','type':'image/svg+xml'}]}">
+<link rel="manifest" href="data:application/manifest+json,{'name':'Visualgraal','short_name':'VG','display':'standalone','background_color':'#f5f7fa','theme_color':'#4a5568','icons':[{'src':'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0QTU1NjgiLz4KPHBhdGggZD0iTTExIDZMMTMgOUwxMSAxMUw5IDlMMTAgNkwxMiA0TDE0IDZMMTIgOUwxNCAxMUwxMiAxM1oiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=', 'sizes':'24x24','type':'image/svg+xml'}]}">
 <title>Visualgraal – See the invisible</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -11,7 +11,7 @@ body{font-family:system-ui,sans-serif;background:#f5f7fa;color:#4a5568;height:10
 header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;}
 #logo{display:flex;align-items:center;gap:8px;}
 #logo img{width:24px;height:24px;}
-#logo-text{font-size:22px;font-weight:700;color:#4a5568;}
+#logo-text{font-size:18px;font-weight:700;color:#4a5568;word-break:break-word;}
 #lang select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#4a5568;font-size:14px;cursor:pointer;}
 #prompt-section{padding:16px;background:#fff;border-bottom:1px solid #e2e8f0;}
 #prompt{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px;resize:none;height:60px;}
@@ -25,16 +25,16 @@ header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display
 .tool-btn.active{background:#4a5568;color:#fff;}
 #status{padding:12px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#718096;}
 #slogan{font-weight:600;color:#4a5568;}
-#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(74,85,104,0.1);padding:12px 24px;border:1px solid #4a5568;border-radius:12px;font-family:monospace;box-shadow:0 4px 12px rgba(74,85,104,0.1);z-index:1000;max-width:200px;word-break:break-word;}
-#title{font-size:28px;font-weight:700;color:#4a5568;letter-spacing:2px;word-break:break-word;}
-#by{font-size:11px;color:#718096;margin-top:-2px;}
-@media (max-width:768px){#tools{flex-direction:column;}#canvas-area{padding:10px;}#signature{bottom:env(safe-area-inset-bottom,10px);right:10px;font-size:14px;max-width:150px;}}
+#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(74,85,104,0.1);padding:8px 16px;border:1px solid #4a5568;border-radius:12px;font-family:monospace;box-shadow:0 4px 12px rgba(74,85,104,0.1);z-index:1000;max-width:200px;text-align:center;}
+#title{font-size:16px;font-weight:700;color:#4a5568;letter-spacing:1px;word-break:break-word;}
+#by{font-size:10px;color:#718096;margin-top:2px;}
+@media (max-width:768px){#tools{flex-direction:column;}#canvas-area{padding:10px;}#signature{bottom:env(safe-area-inset-bottom,10px);right:10px;font-size:12px;max-width:150px;padding:6px 12px;}}
 </style>
 </head>
 <body>
 <header>
 <div id="logo">
-<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0QTU1NjgiLz4KPHBhdGggZD0iTTExIDZMMTMgOUwxMSAxMUw5IDlMMTAgNkwxMiA0TDE0IDZMMTIgOUwxNCAxMUwxMiAxM1oiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Logo Visualgraal">
+<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0QTU1NjgiLz4KPHBhdGggZD0iTTExIDZMMTMgOUwxMSAxMUw5IDlMMTAgNkwxMiA0TDE0IDZMMTIgOUwxNCAxMUwxMiAxM1oiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Logo">
 <span id="logo-text">Visualgraal</span>
 </div>
 <select id="lang" onchange="changeLang(this.value)">
@@ -72,7 +72,7 @@ header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display
 
 <div id="signature">
 <div id="title">Visualgraal</div>
-<div id="by">(by Jean-Luc Battini)</div>
+<div id="by">by Jean-Luc Battini</div>
 </div>
 
 <script>
