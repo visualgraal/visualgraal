@@ -5,29 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Visualgraal – See the invisible</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:system-ui,sans-serif;background:#f5f7fa;color:#4a5568;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;}
-#logo{display:flex;align-items:center;gap:8px;}
-#logo img{width:24px;height:24px;}
-#logo-text{font-size:22px;font-weight:700;color:#4a5568;word-break:break-word;}
-#lang select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#4a5568;font-size:14px;cursor:pointer;}
-#prompt-section{padding:16px;background:#fff;border-bottom:1px solid #e2e8f0;}
-#prompt{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px;resize:none;height:60px;}
-#generate{width:100%;padding:12px;background:#4a5568;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;}
-#generate:hover{background:#2d3748;}
-#generate:disabled{background:#a0aec0;cursor:not-allowed;}
-#canvas-area{flex:1;display:flex;justify-content:center;align-items:center;background:#f7fafc;padding:20px;overflow:auto;}
-#canvas{border:1px solid #e2e8f0;border-radius:12px;background:#fff;cursor:crosshair;max-width:100%;max-height:100%;touch-action:none;}
-#tools{padding:16px;padding-bottom:env(safe-area-inset-bottom,60px);background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;min-height:80px;z-index:10;}
-.tool-btn{padding:12px 20px;background:#e2e8f0;color:#4a5568;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;min-height:44px;min-width:100px;flex:1;max-width:150px;}
-.tool-btn.active{background:#4a5568;color:#fff;}
-#status{padding:12px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#718096;}
-#slogan{font-weight:600;color:#4a5568;}
-#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(74,85,104,0.1);padding:12px 24px;border:1px solid #4a5568;border-radius:12px;font-family:monospace;box-shadow:0 4px 12px rgba(74,85,104,0.1);z-index:1000;max-width:200px;text-align:center;}
-#title{font-size:16px;font-weight:700;color:#4a5568;letter-spacing:1px;word-break:break-word;}
-#by{font-size:10px;color:#718096;margin-top:2px;}
-@media (max-width:768px){#tools{flex-direction:column;}#canvas-area{padding:10px;}#signature{bottom:env(safe-area-inset-bottom,10px);right:10px;font-size:14px;max-width:150px;padding:6px 12px;}}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f5f7fa; color: #4a5568; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+header { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+#logo { display: flex; align-items: center; gap: 8px; }
+#logo img { width: 24px; height: 24px; }
+#logo-text { font-size: 22px; font-weight: 700; color: #4a5568; word-break: break-word; }
+#lang select { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; color: #4a5568; font-size: 14px; cursor: pointer; }
+#prompt-section { padding: 16px; background: #fff; border-bottom: 1px solid #e2e8f0; }
+#prompt { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; resize: none; height: 60px; }
+#generate { width: 100%; padding: 12px; background: #4a5568; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+#generate:hover { background: #2d3748; }
+#generate:disabled { background: #a0aec0; cursor: not-allowed; }
+#canvas-area { flex: 1; display: flex; justify-content: center; align-items: center; background: #f7fafc; padding: 20px; overflow: auto; }
+#canvas { border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; cursor: crosshair; max-width: 100%; max-height: 100%; touch-action: none; }
+#tools { padding: 16px; padding-bottom: env(safe-area-inset-bottom, 60px); background: #fff; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; min-height: 80px; z-index: 10; }
+.tool-btn { padding: 12px 20px; background: #e2e8f0; color: #4a5568; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; min-height: 44px; min-width: 100px; flex: 1; max-width: 150px; }
+.tool-btn.active { background: #4a5568; color: #fff; }
+#status { padding: 12px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #718096; }
+#slogan { font-weight: 600; color: #4a5568; }
+#signature { position: fixed; bottom: env(safe-area-inset-bottom, 20px); right: 20px; background: rgba(74,85,104,0.1); padding: 12px 24px; border: 1px solid #4a5568; border-radius: 12px; font-family: monospace; box-shadow: 0 4px 12px rgba(74,85,104,0.1); z-index: 1000; max-width: 200px; text-align: center; }
+#title { font-size: 16px; font-weight: 700; color: #4a5568; letter-spacing: 1px; word-break: break-word; }
+#by { font-size: 10px; color: #718096; margin-top: 2px; }
+@media (max-width: 768px) { #tools { flex-direction: column; } #canvas-area { padding: 10px; } #signature { bottom: env(safe-area-inset-bottom, 10px); right: 10px; font-size: 14px; max-width: 150px; padding: 6px 12px; } }
 </style>
 </head>
 <body>
@@ -203,4 +203,3 @@ changeLang('fr');
 </script>
 </body>
 </html>
-	
