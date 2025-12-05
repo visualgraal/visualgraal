@@ -20,7 +20,7 @@ header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display
 #generate:disabled{background:#a0aec0;cursor:not-allowed;}
 #canvas-area{flex:1;display:flex;justify-content:center;align-items:center;background:#f7fafc;padding:20px;overflow:auto;}
 #canvas{border:1px solid #e2e8f0;border-radius:12px;background:#fff;cursor:crosshair;max-width:100%;max-height:100%;touch-action:none;}
-#tools{padding:16px;background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+#tools{padding:16px;padding-bottom:env(safe-area-inset-bottom,40px);background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;min-height:64px;z-index:10;}
 .tool-btn{padding:12px 20px;background:#e2e8f0;color:#4a5568;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;min-height:44px;min-width:100px;flex:1;max-width:150px;}
 .tool-btn.active{background:#4a5568;color:#fff;}
 #status{padding:12px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#718096;}
