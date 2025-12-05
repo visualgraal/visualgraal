@@ -114,9 +114,10 @@ canvas.addEventListener('mouseup', stopDrawing);
 canvas.addEventListener('mouseout', stopDrawing);
 
 // Touch events (iPhone)
-canvas.addEventListener('touchstart', handleTouch);
-canvas.addEventListener('touchmove', handleTouch);
+canvas.addEventListener('touchstart', handleTouch, {passive: false});
+canvas.addEventListener('touchmove', handleTouch, {passive: false});
 canvas.addEventListener('touchend', stopDrawing);
+canvas.addEventListener('touchcancel', stopDrawing);
 
 let lastX = 0, lastY = 0;
 
@@ -212,3 +213,4 @@ changeLang('fr');
 </script>
 </body>
 </html>
+
