@@ -1,3 +1,16 @@
+
+Conversation ouverte. 1 message non lu.
+
+Aller au contenu
+Utiliser Gmail avec un lecteur d'écran
+Visu6
+Boîte de réception
+Luxe Presse <luxepresse@gmail.com>
+	
+12:55 (il y a 3 minutes)
+	
+	
+À moi
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -107,13 +120,12 @@ ctx.lineWidth = 25;
 ctx.lineCap = 'round';
 ctx.strokeStyle = '#4a5568';
 
-// Mouse events
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mousemove', draw);
 canvas.addEventListener('mouseup', stopDrawing);
 canvas.addEventListener('mouseout', stopDrawing);
 
-// Touch events (iPhone)
+// Touch pour iPhone (renforcé pour Safari)
 canvas.addEventListener('touchstart', handleTouch, {passive: false});
 canvas.addEventListener('touchmove', handleTouch, {passive: false});
 canvas.addEventListener('touchend', stopDrawing);
@@ -213,4 +225,3 @@ changeLang('fr');
 </script>
 </body>
 </html>
-
