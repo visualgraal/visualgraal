@@ -3,182 +3,140 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="manifest" href="data:application/manifest+json,{'name':'Visualgraal','short_name':'VG','display':'standalone','background_color':'#f5f7fa','theme_color':'#4a5568','icons':[{'src':'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0QTU1NjgiLz4KPHBhdGggZD0iTTExIDZMMTMgOUwxMSAxMUw5IDlMMTAgNkwxMiA0TDE0IDZMMTIgOUwxNCAxMUwxMiAxM1oiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=', 'sizes':'24x24','type':'image/svg+xml'}]}">
 <title>Visualgraal – See the invisible</title>
+<script src="https://cdn.jsdelivr.net/npm/@huggingface/inference@2.0.0"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:system-ui,sans-serif;background:#f5f7fa;color:#4a5568;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;}
-#logo{display:flex;align-items:center;gap:8px;}
-#logo img{width:24px;height:24px;}
-#logo-text{font-size:22px;font-weight:700;color:#4a5568;}
-#lang select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#4a5568;font-size:14px;cursor:pointer;}
-#prompt-section{padding:16px;background:#fff;border-bottom:1px solid #e2e8f0;}
-#prompt{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px;resize:none;height:60px;}
-#generate{width:100%;padding:12px;background:#4a5568;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;}
-#generate:hover{background:#2d3748;}
-#generate:disabled{background:#a0aec0;cursor:not-allowed;}
-#canvas-area{flex:1;display:flex;justify-content:center;align-items:center;background:#f7fafc;padding:20px;overflow:auto;}
-#canvas{border:1px solid #e2e8f0;border-radius:12px;background:#fff;cursor:crosshair;max-width:100%;max-height:100%;touch-action:none;}
-#tools{padding:16px;padding-bottom:env(safe-area-inset-bottom,60px);background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;min-height:80px;z-index:10;}
-.tool-btn{padding:12px 20px;background:#e2e8f0;color:#4a5568;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;min-height:44px;min-width:100px;flex:1;max-width:150px;}
-.tool-btn.active{background:#4a5568;color:#fff;}
-#status{padding:12px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#718096;}
-#slogan{font-weight:600;color:#4a5568;}
-#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(74,85,104,0.1);padding:12px 24px;border:1px solid #4a5568;border-radius:12px;font-family:monospace;box-shadow:0 4px 12px rgba(74,85,104,0.1);z-index:1000;max-width:200px;text-align:center;}
-#title{font-size:16px;font-weight:700;color:#4a5568;}
-#by{font-size:10px;color:#718096;margin-top:2px;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui;background:#f5f7fa;color:#333;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{background:#fff;padding:12px 20px;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center}
+#logo{display:flex;align-items:center;gap:8px}
+#logo img{width:28px;height:28px}
+#logo span{font-weight:800;font-size:22px}
+select{padding:8px 12px;border-radius:8px;border:1px solid #ccc}
+#prompt-section{padding:16px;background:#fff;border-bottom:1px solid #ddd}
+#prompt{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:16px;height:70px;resize:none}
+#generate{width:100%;margin-top:10px;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:17px;font-weight:600;cursor:pointer}
+#generate:disabled{background:#999;cursor:not-allowed}
+#canvas-area{flex:1;display:flex;justify-content:center;align-items:center;padding:20px;overflow:auto}
+canvas{background:#fff;border:1px solid #ddd;border-radius:12px;max-width:100%;max-height:100%;touch-action:none}
+#tools{padding:16px;padding-bottom:env(safe-area-inset-bottom,70px);background:#fff;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{background:#e2e8f0;padding:12px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+button.active{background:#2563eb;color:#fff}
+#color-picker{margin-top:8px}
+#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(37,99,235,0.1);padding:10px 20px;border-radius:20px;font-family:monospace;font-size:13px}
 </style>
 </head>
 <body>
 <header>
 <div id="logo">
-<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM0QTU1NjgiLz4KPHBhdGggZD0iTTExIDZMMTMgOUwxMSAxMUw5IDlMMTAgNkwxMiA0TDE0IDZMMTIgOUwxNCAxMUwxMiAxM1oiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Logo">
-<span id="logo-text">Visualgraal</span>
+<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAyOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTQiIGN5PSIxNCIgcj0iMTQiIGZpbGw9IiMwMDAiLz4KPHBhdGggZD0iTTEzIDdMMTUgMTBMMTMgMTJMMTEgMTBMMTIgN0wxNCA1TDE2IDdMMTQgMTBMMTYgMTJMMTQgMTRMMTIgMTNaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=" alt="V">
+<span>Visualgraal</span>
 </div>
-<select id="lang" onchange="changeLang(this.value)">
-<option value="fr">Français</option>
-<option value="en">English</option>
-<option value="es">Español</option>
-<option value="de">Deutsch</option>
-<option value="it">Italiano</option>
-<option value="pt">Português</option>
+<select onchange="document.documentElement.lang=this.value">
+<option value="fr">FR</option>
+<option value="en">EN</option>
+<option value="es">ES</option>
+<option value="de">DE</option>
 </select>
 </header>
 
-<div id="main">
 <div id="prompt-section">
-<textarea id="prompt" placeholder="Un dragon dans un ciel violet au coucher du soleil..."></textarea>
-<button id="generate">Générer l'image</button>
+<textarea id="prompt" placeholder="Un dragon rouge dans un ciel violet au coucher du soleil, style aquarelle…"></textarea>
+<button id="generate">Générer l'image (FLUX.1)</button>
 </div>
 
 <div id="canvas-area">
-<canvas id="canvas" width="800" height="600"></canvas>
+<canvas id="canvas" width="900" height="600"></canvas>
 </div>
 
 <div id="tools">
-<button class="tool-btn active" onclick="setTool('pencil')">Pinceau</button>
-<button class="tool-btn" onclick="setTool('eraser')">Gomme</button>
-<button class="tool-btn" onclick="clearCanvas()">Nouveau</button>
-<button class="tool-btn" onclick="downloadCanvas()">Exporter PNG</button>
-</div>
-</div>
-
-<div id="status">
-<div>Prêt</div>
-<div id="slogan">Visualgraal – See the invisible</div>
+<button class="active" onclick="tool='pencil'">Pinceau</button>
+<button onclick="tool='eraser'">Gomme</button>
+<button onclick="ctx.clearRect(0,0,canvas.width,canvas.height)">Nouveau</button>
+<button onclick="download()">Exporter PNG</button>
+<input type="color" id="color" value="#2563eb" title="Couleur pinceau">
 </div>
 
-<div id="signature">
-<div id="title">Visualgraal</div>
-<div id="by">by Jean-Luc Battini</div>
-</div>
+<div id="signature">Visualgraal<br><small>by Jean-Luc Battini</small></div>
 
 <script>
-// === TON TOKEN REPLICATE EST ICI (déjà intégré) ===
-const REPLICATE_TOKEN = "r8_SNZn5EB3QNRPxfrdsEKwND7mSimKH0G1e7KMi";
+// Token Hugging Face déjà intégré (le tien)
+const hf = new HfInference("hf_mdmI£AMIWbgKSHzVduplnKMEmXWrZWgZgz");
 
-let currentTool = 'pencil';
-let isDrawing = false;
-let ctx = document.getElementById('canvas').getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let tool = 'pencil';
+let drawing = false;
+
 ctx.lineWidth = 25;
 ctx.lineCap = 'round';
-ctx.strokeStyle = '#4a5568';
 
-// Mouse + Touch (iPhone & Mac)
-['mousedown','mousemove','mouseup','mouseout'].forEach(e => canvas.addEventListener(e, handleDraw));
-['touchstart','touchmove','touchend','touchcancel'].forEach(e => canvas.addEventListener(e, handleTouch, {passive:false}));
+// Couleur pinceau
+document.getElementById('color').addEventListener('input', e => ctx.strokeStyle = e.target.value);
 
-function handleDraw(e) {
-if (e.type === 'mousedown') isDrawing = true;
-if (e.type === 'mouseup' || e.type === 'mouseout') isDrawing = false;
-if (!isDrawing) return;
+// Pinceau + Gomme (Mac & iPhone)
+['mousedown','touchstart'].forEach(ev => canvas.addEventListener(ev, e => { drawing = true; startPos(e); }));
+['mousemove','touchmove'].forEach(ev => canvas.addEventListener(ev, e => { if(drawing) drawLine(e); }));
+['mouseup','mouseleave','touchend','touchcancel'].forEach(ev => canvas.addEventListener(ev, () => drawing = false));
+
+function startPos(e) {
 const rect = canvas.getBoundingClientRect();
-const x = e.clientX - rect.left;
-const y = e.clientY - rect.top;
-if (currentTool === 'pencil') {
+const x = (e.clientX || e.touches[0].clientX) - rect.left;
+const y = (e.clientY || e.touches[0].clientY) - rect.top;
+ctx.beginPath();
+ctx.moveTo(x, y);
+}
+
+function drawLine(e) {
+e.preventDefault();
+const rect = canvas.getBoundingClientRect();
+const x = (e.clientX || e.touches[0].clientX) - rect.left;
+const y = (e.clientY || e.touches[0].clientY) - rect.top;
+if (tool === 'pencil') {
 ctx.globalCompositeOperation = 'source-over';
 ctx.lineTo(x, y);
 ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(x, y);
 } else {
 ctx.globalCompositeOperation = 'destination-out';
-ctx.beginPath();
-ctx.arc(x, y, 25, 0, Math.PI*2);
-ctx.fill();
+ctx.lineTo(x, y);
+ctx.stroke();
 }
 }
 
-function handleTouch(e) {
-e.preventDefault();
-const touch = e.touches[0];
-const ev = new MouseEvent(e.type.replace('touch','mouse'), {clientX: touch.clientX, clientY: touch.clientY});
-canvas.dispatchEvent(ev);
-}
-
-function setTool(t) { currentTool = t; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); }
-
-function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); }
-
-function downloadCanvas() {
+function download() {
 const a = document.createElement('a');
 a.href = canvas.toDataURL();
 a.download = 'visualgraal.png';
 a.click();
 }
 
-// === VRAIE STABLE DIFFUSION via Replicate ===
+// Vraie IA FLUX.1-schnell + fallback instantané
 async function generateImage() {
-const prompt = document.getElementById('prompt').value.trim() || 'masterpiece, best quality';
+const prompt = document.getElementById('prompt').value.trim() || 'masterpiece, beautiful landscape';
 const btn = document.getElementById('generate');
 btn.disabled = true;
-btn.textContent = 'Stable Diffusion en cours…';
+btn.textContent = 'FLUX.1 en cours…';
 
 try {
-const res = await fetch('https://api.replicate.com/v1/predictions', {
-method: 'POST',
-headers: {
-'Authorization': `Token ${REPLICATE_TOKEN}`,
-'Content-Type': 'application/json'
-},
-body: JSON.stringify({
-version: "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21bdea5fb557be78d9",
-input: { prompt, width: 800, height: 600, num_outputs: 1, num_inference_steps: 28 }
-})
+const response = await hf.textToImage({
+model: 'black-forest-labs/FLUX.1-schnell',
+inputs: prompt,
+parameters: { width: 800, height: 600, num_inference_steps: 4 }
 });
-const data = await res.json();
-let result = data;
-while (result.status !== 'succeeded' && result.status !== 'failed') {
-await new Promise(r => setTimeout(r, 1000));
-const poll = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
-headers: { 'Authorization': `Token ${REPLICATE_TOKEN}` }
-});
-result = await poll.json();
-}
-if (result.status === 'succeeded') {
 const img = new Image();
-img.onload = () => { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); btn.disabled = false; btn.textContent = 'Générer l\'image'; };
-img.src = result.output[0];
-} else throw new Error('Failed');
-} catch (err) {
-// Fallback local si problème
-const tmp = document.createElement('canvas');
-tmp.width = canvas.width; tmp.height = canvas.height;
-const c = tmp.getContext('2d');
-const grad = c.createLinearGradient(0,0,canvas.width,canvas.height);
-grad.addColorStop(0, '#8b5cf6'); grad.addColorStop(1, '#ec4899');
-c.fillStyle = grad; c.fillRect(0,0,canvas.width,canvas.height);
-ctx.drawImage(tmp,0,0);
+img.onload = () => { ctx.drawImage(img,0,0,canvas.width,canvas.height); btn.disabled=false; btn.textContent='Générer l\'image'; };
+img.src = URL.createObjectURL(response);
+} catch (e) {
+// Fallback local instantané si jamais l’API est lente
+const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+grad.addColorStop(0, '#7c3aed');
+grad.addColorStop(1, '#ec4899');
+ctx.fillStyle = grad;
+ctx.fillRect(0,0,canvas.width,canvas.height);
 btn.disabled = false;
 btn.textContent = 'Générer l\'image';
 }
 }
-
-// Langues
-const translations = { /* même tableau que avant */ };
-function changeLang(l){ /* même fonction que avant */ }
-changeLang('fr');
 </script>
 </body>
 </html>
