@@ -11,7 +11,7 @@ body{font-family:system-ui,sans-serif;background:#f5f7fa;color:#4a5568;height:10
 header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;}
 #logo{display:flex;align-items:center;gap:8px;}
 #logo img{width:24px;height:24px;}
-#logo-text{font-size:18px;font-weight:700;color:#4a5568;word-break:break-word;}
+#logo-text{font-size:22px;font-weight:700;color:#4a5568;word-break:break-word;}
 #lang select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#4a5568;font-size:14px;cursor:pointer;}
 #prompt-section{padding:16px;background:#fff;border-bottom:1px solid #e2e8f0;}
 #prompt{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px;resize:none;height:60px;}
@@ -25,10 +25,10 @@ header{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 20px;display
 .tool-btn.active{background:#4a5568;color:#fff;}
 #status{padding:12px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#718096;}
 #slogan{font-weight:600;color:#4a5568;}
-#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(74,85,104,0.1);padding:8px 16px;border:1px solid #4a5568;border-radius:12px;font-family:monospace;box-shadow:0 4px 12px rgba(74,85,104,0.1);z-index:1000;max-width:200px;text-align:center;}
+#signature{position:fixed;bottom:env(safe-area-inset-bottom,20px);right:20px;background:rgba(74,85,104,0.1);padding:12px 24px;border:1px solid #4a5568;border-radius:12px;font-family:monospace;box-shadow:0 4px 12px rgba(74,85,104,0.1);z-index:1000;max-width:200px;text-align:center;}
 #title{font-size:16px;font-weight:700;color:#4a5568;letter-spacing:1px;word-break:break-word;}
 #by{font-size:10px;color:#718096;margin-top:2px;}
-@media (max-width:768px){#tools{flex-direction:column;}#canvas-area{padding:10px;}#signature{bottom:env(safe-area-inset-bottom,10px);right:10px;font-size:12px;max-width:150px;padding:6px 12px;}}
+@media (max-width:768px){#tools{flex-direction:column;}#canvas-area{padding:10px;}#signature{bottom:env(safe-area-inset-bottom,10px);right:10px;font-size:14px;max-width:150px;padding:6px 12px;}}
 </style>
 </head>
 <body>
@@ -184,7 +184,7 @@ link.href = canvas.toDataURL();
 link.click();
 }
 
-async function generateImage() {
+function generateImage() {
 const prompt = document.getElementById('prompt').value.trim() || 'beautiful landscape';
 const btn = document.getElementById('generate');
 btn.disabled = true;
